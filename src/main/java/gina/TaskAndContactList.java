@@ -6,14 +6,16 @@ import java.util.ArrayList;
 /**
  * Contains and manages the list of tasks
  */
-public class TaskList {
+public class TaskAndContactList {
     private ArrayList<Task> tasks;
+    private ArrayList<Contact> contacts;
 
     /**
-     * Constructs an empty task list
+     * Constructs an empty task list and contacts list.
      */
-    public TaskList() {
+    public TaskAndContactList() {
         tasks = new ArrayList<>();
+        contacts = new ArrayList<>();
     }
 
     /**
@@ -21,8 +23,9 @@ public class TaskList {
      *
      * @param tasks The specified tasks
      */
-    public TaskList(ArrayList<Task> tasks) {
+    public TaskAndContactList(ArrayList<Task> tasks, ArrayList<Contact> contacts) {
         this.tasks = tasks;
+        this.contacts = contacts;
         assert(tasks != null);
     }
 
@@ -33,11 +36,19 @@ public class TaskList {
      * @return Task at the specified index.
      * @throws GinaException If index is out of bounds.
      */
-    public Task get(int i) throws GinaException {
+    public Task getTask(int i) throws GinaException {
         try {
             return tasks.get(i);
         } catch (IndexOutOfBoundsException e) {
             throw new GinaException("Please enter a valid task number!");
+        }
+    }
+
+    public Contact getContact(int i) throws GinaException {
+        try {
+            return contacts.get(i);
+        } catch (IndexOutOfBoundsException e) {
+            throw new GinaException("Please enter a valid contact index number!");
         }
     }
 
@@ -46,8 +57,12 @@ public class TaskList {
      *
      * @return Size of task list.
      */
-    public int size() {
+    public int tasksSize() {
         return tasks.size();
+    }
+
+    public int contactsSize() {
+        return contacts.size();
     }
 
     /**
@@ -60,7 +75,17 @@ public class TaskList {
         assert(tasks != null);
         StringBuilder list = new StringBuilder();
         for (int i = 0; i < tasks.size(); i++) {
-            String newLine = (i + 1) + ". " + tasks.get(i).toString() + "\n";
+            String newLine = "T" + (i + 1) + " " + tasks.get(i).toString() + "\n";
+            list.append(newLine);
+        }
+        return list.toString();
+    }
+
+    public static String convertContactsToListString(ArrayList<Contact> contacts) {
+        assert(contacts != null);
+        StringBuilder list = new StringBuilder();
+        for (int i = 0; i < contacts.size(); i++) {
+            String newLine = "C" + (i + 1) + " " + contacts.get(i).toString() + "\n";
             list.append(newLine);
         }
         return list.toString();
@@ -74,6 +99,11 @@ public class TaskList {
     public void addTask(Task task) {
         assert(task != null);
         tasks.add(task);
+    }
+
+    public void addContact(Contact contact) {
+        assert(contact != null);
+        contacts.add(contact);
     }
 
     /**
@@ -91,6 +121,14 @@ public class TaskList {
         }
     }
 
+    public Contact deleteContact(int index) throws GinaException {
+        try {
+            return contacts.remove(index);
+        } catch (IndexOutOfBoundsException e) {
+            throw new GinaException("I can't find such a contact to delete!");
+        }
+    }
+
     /**
      * Returns a task list with tasks on the specified date.
      *
@@ -98,24 +136,32 @@ public class TaskList {
      * @return List of tasks with specified date.
      * @throws GinaException If date is blank or in the wrong format.
      */
-    public TaskList getTasksOnDate(String dateStr) throws GinaException {
+    public TaskAndContactList getTasksOnDate(String dateStr) throws GinaException {
         ArrayList<Task> tasksOnDate = new ArrayList<>();
         for (Task t : tasks) {
             if (t.isOnThisDate(dateStr)) {
                 tasksOnDate.add(t);
             }
         }
-        return new TaskList(tasksOnDate);
+        return new TaskAndContactList(tasksOnDate, new ArrayList<>());
     }
 
-    public TaskList getTasksWithWord(String input) throws GinaException {
+    public TaskAndContactList getTasksWithWord(String input) throws GinaException {
         ArrayList<Task> tasksWithWord = new ArrayList<>();
         for (Task t : tasks) {
             if (t.doesDescriptionContain(input)) {
                 tasksWithWord.add(t);
             }
         }
-        return new TaskList(tasksWithWord);
+        return new TaskAndContactList(tasksWithWord, new ArrayList<>());
+    }
+
+    protected String getTaskList() {
+        return convertTasksToListString(tasks);
+    }
+
+    protected String getContactsList() {
+        return convertContactsToListString(contacts);
     }
 
     /**
@@ -123,6 +169,7 @@ public class TaskList {
      */
     @Override
     public String toString() {
-        return convertTasksToListString(tasks);
+        return "Tasks:\n" + convertTasksToListString(tasks)
+                + "Contacts:\n" + convertContactsToListString(contacts);
     }
 }

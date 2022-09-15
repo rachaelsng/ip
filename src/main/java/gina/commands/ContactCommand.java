@@ -4,20 +4,17 @@ import gina.GinaException;
 import gina.Storage;
 import gina.TaskAndContactList;
 import gina.Ui;
-import gina.task.ToDo;
+import gina.Contact;
 
-/**
- * Represents the command to create a to-do.
- */
-public class ToDoCommand extends Command {
+public class ContactCommand extends Command {
     private String input;
 
     /**
-     * Constructs command to create a new To-Do task with the specified description input.
+     * Constructs command to create a new contact with the specified input.
      *
-     * @param input The user input for task description.
+     * @param input The user input for contact information.
      */
-    public ToDoCommand(String input) {
+    public ContactCommand(String input) {
         this.input = input;
         assert(input != null);
     }
@@ -27,12 +24,14 @@ public class ToDoCommand extends Command {
      */
     public String execute(TaskAndContactList taskAndContactList, Ui ui, Storage storage) throws GinaException {
         if (input.isBlank()) {
-            throw new GinaException("Hold your horses! The description can't be empty!");
+            throw new GinaException("Gina knows better but she can't read minds...");
         }
-        ToDo newTodo = new ToDo(input);
-        taskAndContactList.addTask(newTodo);
+        Contact newContact;
+        String[] str = input.split(" /info ", 2);
+        newContact = new Contact(str[0], str[1]);
+        taskAndContactList.addContact(newContact);
         storage.save(taskAndContactList);
-        return ui.showAddTask(newTodo, taskAndContactList);
+        return ui.showAddContact(newContact);
     }
 
     /**
