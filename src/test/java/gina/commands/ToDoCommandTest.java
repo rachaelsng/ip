@@ -33,7 +33,7 @@ public class ToDoCommandTest {
             toDoCommand.execute(taskAndContactList, ui, storage);
             fail();
         } catch (GinaException e) {
-            assertEquals("Hold up! Description cannot be empty!", e.getMessage());
+            assertEquals("Hold your horses! The description can't be empty!", e.getMessage());
         }
     }
 
@@ -47,7 +47,7 @@ public class ToDoCommandTest {
             toDoCommand.execute(taskAndContactList, ui, storage);
             fail();
         } catch (GinaException e) {
-            assertEquals("Hold up! Description cannot be empty!", e.getMessage());
+            assertEquals("Hold your horses! The description can't be empty!", e.getMessage());
         }
     }
 }
